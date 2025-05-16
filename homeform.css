@@ -1,0 +1,170 @@
+.onewaybj {
+  display: grid;
+  grid-template-columns: calc(100% - 200px) 184px;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.bjf_grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.plan_filter_form_input {
+  width: 100%;
+  display: block;
+  border: 0;
+  outline: none;
+  padding-right: 40px;
+}
+
+.date_block input,
+.empax_wrapper input {
+  background-image: none;
+}
+
+.empax_wrapper input {
+  text-align: center;
+}
+
+.empax_wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.empax_minus {
+  display: flex;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  background-color: #1c1c1c;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 30px;
+  color: #fff;
+  font-weight: 600;
+  padding-bottom: 4px;
+  cursor: pointer;
+}
+
+.empax_plus {
+  display: flex;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  background-color: #1c1c1c;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 30px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pax_label {
+  margin-left: 54px;
+}
+
+.onewaysubmit,
+.roundtrip {
+  display: block;
+  width: 100%;
+  letter-spacing: 0.125rem;
+  background-color: #000;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  padding: 16px 0px;
+  transition: all 0.2s ease;
+}
+
+.onewaysubmit:hover,
+.roundtrip:hover {
+  opacity: 0.7;
+}
+
+/* algolio search css */
+.uniqueid,
+.shortcode,
+.airportshort {
+  display: none;
+}
+
+.eminputblock {
+  position: relative;
+}
+
+.search-results {
+  background-color: #fff;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  left: 0;
+  top: 85px;
+  z-index: 99;
+  width: 365px;
+}
+
+.emfieldnamewrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+  margin: 0;
+  background-color: #fff;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.emfieldnamewrapper p {
+  margin: 0;
+}
+
+.emfieldnamewrapper img {
+  display: inline-block;
+  width: 24px;
+}
+
+p.uniqueid {
+  display: none;
+}
+
+.emfieldnamewrapper:hover {
+  background-color: #ddd;
+}
+
+.portid {
+  display: none;
+}
+
+.add-search-input {
+  margin-right: 20px;
+}
+
+.remove {
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remove img {
+  display: inline-block;
+  width: 45px;
+}
+
+.remove:hover {
+  opacity: 0.7;
+}
+
+.twowaygrid.bjf_grid {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.cityname,
+.airportcity {
+  display: none;
+}

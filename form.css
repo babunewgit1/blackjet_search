@@ -1,0 +1,480 @@
+.auth {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.9);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.auth_wrapper {
+  width: 680px;
+  background-color: #fff;
+}
+
+.auth_logo_heading {
+  background-color: #222222;
+}
+
+.auth_logo img {
+  display: block;
+  width: 200px;
+}
+
+.auth_cross img {
+  display: block;
+  width: 14px;
+  position: absolute;
+  left: calc(100% - 35px);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+.auth_logo_heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 20px;
+  position: relative;
+}
+
+.auth_block_bg_wrapper {
+  padding: 30px;
+}
+
+.auth_block {
+  background-color: #f1f1f1;
+}
+
+.auth_tab_block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+}
+
+.auth_tab_block span {
+  display: block;
+  font-size: 17px;
+  text-transform: uppercase;
+  padding: 10px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #5d5d5d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth_tab_block span:hover {
+  opacity: 0.7;
+}
+
+.auth_tab_block span.active_form {
+  background-color: #5d5d5d;
+  color: #fff;
+  position: relative;
+}
+
+.auth_tab_block span.active_form:after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 1px;
+  border-left: 8px solid transparent;
+  border-bottom: 8px solid #5d5d5d;
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.auth_google {
+  margin: 35px 0px;
+}
+
+.auth_google span {
+  max-width: 300px;
+  margin: auto;
+  margin-bottom: auto;
+  background-color: #fff;
+  text-align: center;
+  font-size: 17px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth_google span:hover {
+  opacity: 0.7;
+}
+
+.auth_google span img {
+  display: inline-block;
+  width: 14px;
+  margin-right: 10px;
+}
+
+.auth_google span:last-child {
+  margin-top: 10px;
+}
+
+.or_block span:first-child {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #5d5d5d;
+}
+
+.or_block {
+  position: relative;
+}
+
+.or_block span.ortext {
+  width: 32px;
+  height: 32px;
+  background-color: #5d5d5d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #fff;
+  text-transform: uppercase;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.signinform_wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.signinform {
+  margin-top: 40px;
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.signin_input label {
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 6px;
+}
+
+.signin_input input {
+  display: block;
+  width: 100%;
+  outline: none;
+  background: #f1f1f1;
+  border: 1px solid #5d5d5d;
+  padding: 10px 13px;
+}
+
+.signin_input input::placeholder {
+  color: #a1a1a1;
+}
+
+.signin_submit button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 17px;
+  color: #fff;
+  text-transform: uppercase;
+  background-color: #000000;
+  gap: 10px;
+  padding: 10px;
+  margin-top: 30px;
+  transition: all 0.2s ease;
+}
+
+.signin_submit button:hover {
+  opacity: 0.7;
+}
+
+.signin_input span {
+  display: block;
+  font-size: 16px;
+  color: #5d5d5d;
+  margin-top: 8px;
+}
+
+.signin_checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.signin_checkbox input {
+  display: block;
+  accent-color: #000;
+  cursor: pointer;
+}
+
+.signin_checkbox label {
+  font-size: 17px;
+  font-weight: normal;
+  color: #5d5d5d;
+  margin-bottom: 0;
+}
+
+.signin_checkbox label a {
+  display: inline-block;
+  font-weight: 600;
+  color: #000000;
+  transition: all 0.2s ease;
+}
+
+.signin_checkbox label a:hover {
+  opacity: 0.7;
+}
+
+.signin_checkbox {
+  margin: 15px 0px;
+}
+
+.sign_up_block {
+  display: none;
+}
+
+.auth_block {
+  padding-bottom: 30px;
+}
+
+.signin_block {
+  display: block;
+}
+
+.auth_google,
+.or_block {
+  display: none;
+}
+
+p.forget_pass {
+  font-size: 18px;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+p.forget_pass:hover {
+  opacity: 0.7;
+}
+
+.auth_forget {
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.auth_forget {
+  display: none;
+}
+
+.auth_forget h2 {
+  margin-top: 0;
+  text-align: center;
+  font-weight: 600;
+  font-size: 35px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  margin-bottom: 0;
+}
+
+.auth-popup {
+  display: none;
+}
+
+.active_popup {
+  display: block;
+}
+
+.show_account {
+  transform: scaleY(1);
+}
+
+.black {
+  background-color: rgba(0, 0, 0, 0.9);
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+/* -- code start for toast notification -- */
+.toast {
+  min-width: 250px;
+  background-color: #fff;
+  border-radius: 4px 0px 0px 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: none;
+  animation: slideIn 0.3s ease-out;
+}
+
+.toast.show {
+  display: block;
+}
+
+.toast-body {
+  padding: 0.5rem 1rem;
+  color: #000;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  color: #000;
+}
+
+.btn-close:hover {
+  opacity: 0.7;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/*
+====================================
+Code for making responsive
+====================================
+*/
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .account_details {
+    width: 100%;
+    height: calc(100vh - 76px);
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+}
+
+@media screen and (min-width: 576px) and (max-width: 767px) {
+  .auth {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .auth_logo img {
+    width: 135px;
+  }
+
+  .auth_block_bg_wrapper {
+    padding: 15px;
+    max-height: 560px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .auth_forget {
+    padding: 15px;
+  }
+
+  .signinform {
+    margin-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .signinform_wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .signin_input label {
+    margin-bottom: 2px;
+  }
+
+  .auth_forget h2 {
+    font-size: 30px;
+    padding-top: 0px;
+    padding-bottom: 25px;
+  }
+
+  .account_details {
+    width: 100%;
+    height: calc(100vh - 76px);
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .auth {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .auth_logo img {
+    width: 135px;
+  }
+
+  .auth_block_bg_wrapper {
+    padding: 15px;
+    max-height: 560px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .auth_forget {
+    padding: 15px;
+  }
+
+  .signinform {
+    margin-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .signinform_wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .signin_input label {
+    margin-bottom: 2px;
+  }
+
+  .auth_forget h2 {
+    font-size: 30px;
+    padding-top: 0px;
+    padding-bottom: 25px;
+  }
+
+  .account_details {
+    width: 100%;
+    height: calc(100vh - 76px);
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+}

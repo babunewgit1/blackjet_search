@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //utlity js
+      // Utility functions for authentication system
+
+      function showAuthFormsWrapper() {
+        const authFormsWrapper = document.getElementById("authFormsWrapper");
+        if (authFormsWrapper) {
+          authFormsWrapper.style.display = "block";
+        }
+      }
+
+      function hideAuthFormsWrapper() {
+        const authFormsWrapper = document.getElementById("authFormsWrapper");
+        if (authFormsWrapper) {
+          authFormsWrapper.style.display = "none";
+        }
+      }
+
+      function updateUIForLoggedInUser(userEmail) {
+        const userEmailDisplay = document.getElementById("userEmail");
+        const logoutBtn = document.getElementById("logoutBtn");
+        // Function to update price visibility
+        function updatePriceVisibility() {
+          const priceElements = document.querySelectorAll(".item_book .price");
+          if (userEmail && typeof userEmail === "string") {
+            priceElements.forEach((price) => {
+              price.style.filter = "none";
+            });
+          } else {
+            priceElements.forEach((price) => {
+              price.style.filter = "blur(5px)";
+              price.style.userSelect = "none";
+              price.style.webkitUserSelect = "none";
+              price.style.msUserSelect = "none";
+            });
+          }
+        }
+
+        // Create observer for price elements
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.addedNodes.length) {
+              updatePriceVisibility();
+            }
+          });
+        });
+
+        // Start observing
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+
+        if (userEmail && typeof userEmail === "string") {
+          const firstLetter = userEmail.charAt(0).toUpperCase();
+          userEmailDisplay.textContent = firstLetter;
+          userEmailDisplay.style.display = "inline-block";
+          document.querySelector(".usermailtext").style.display = "flex";
+          document.querySelector(".usermailtext").title = userEmail;
+          logoutBtn.style.display = "inline-block";
+          hideAuthFormsWrapper();
+          document.querySelector(".hd_signup").style.display = "none";
+          document.querySelector(".hd_login").style.display = "none";
+        } else {
+          document.querySelector(".usermailtext").style.display = "none";
+          logoutBtn.style.display = "none";
+          showAuthFormsWrapper();
+          document.querySelector(".hd_signup").style.display = "flex";
+          document.querySelector(".hd_login").style.display = "flex";
+
+          if (localStorage.getItem("aircraft_details")) {
+            localStorage.removeItem("aircraft_details");
+          }
+        }
+      }
+
+      // Export functions to global scope
+      window.showAuthFormsWrapper = showAuthFormsWrapper;
+      window.hideAuthFormsWrapper = hideAuthFormsWrapper;
+      window.updateUIForLoggedInUser = updateUIForLoggedInUser;
+
+      // Initialize auth forms wrapper on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        hideAuthFormsWrapper();
+        const userEmail = Cookies.get("userEmail");
+        const authToken = Cookies.get("authToken");
+
+        if (userEmail && authToken) {
+          updateUIForLoggedInUser(userEmail);
+        } else {
+          showAuthFormsWrapper();
+        }
+
+        document
+          .getElementById("logoutBtn")
+          .addEventListener("click", async function () {
+            try {
+              // Retrieve the token from cookies or local storage
+              const token = Cookies.get("authToken");
+
+              if (!token) {
+                alert("Authentication token is missing. Please log in again.");
+                return;
+              }
+
+              // Hit the logout API endpoint with the token
+              const response = await fetch(
+                "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_logout",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+
+              if (response.ok) {
+                Cookies.remove("userSession");
+                Cookies.remove("authToken");
+                toastMessage.textContent = "Logout successful!";
+                toast.show();
+                setTimeout(() => {
+                  window.location.href = "/";
+                }, 200);
+              } else {
+                console.error("Failed to logout: ", response.statusText);
+              }
+            } catch (error) {
+              console.error("Error during logout: ", error);
+            }
+          });
+      });
+    </script>
+    <script>
+      //toast js
+      class Toast {
+        constructor(element) {
+          this.element = element;
+        }
+
+        show() {
+          this.element.classList.add("show");
+          // Auto-hide after 5 seconds
+          setTimeout(() => this.hide(), 8000);
+        }
+
+        hide() {
+          this.element.classList.remove("show");
+        }
+      }
+
+      // Initialize toast when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        window.toast = new Toast(document.getElementById("notificationToast"));
+      });
+    </script>
+    <script>
+      //form.js
+      document.addEventListener("DOMContentLoaded", () => {
+        // Get form elements
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        const forgotPasswordForm =
+          document.getElementById("forgotPasswordForm");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        // Get navigation links
+        const showSignupLink = document.getElementById("showSignup");
+        const showLoginLink = document.getElementById("showLogin");
+        const showForgotPasswordLink =
+          document.getElementById("showForgotPassword");
+        const backToLoginLink = document.getElementById("backToLogin");
+
+        // Function to show a specific form and hide others
+        const showForm = (formToShow) => {
+          [loginForm, signupForm, forgotPasswordForm].forEach((form) => {
+            form.style.display = form === formToShow ? "flex" : "none";
+          });
+        };
+
+        // Event listeners for navigation
+        showSignupLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showForm(signupForm);
+        });
+
+        showLoginLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showForm(loginForm);
+        });
+
+        showForgotPasswordLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showForm(forgotPasswordForm);
+        });
+
+        backToLoginLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          showForm(loginForm);
+        });
+
+        signupForm.querySelector("form").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const password = document.getElementById("signupPassword").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+          }
+        });
+
+        // Logout handler
+        logoutBtn.addEventListener("click", () => {
+          logoutBtn.style.display = "none";
+          document.getElementById("userEmail").style.display = "none";
+          document.getElementById("userEmail").textContent = "";
+          // showForm(loginForm);
+        });
+
+        // code for close button in pobup from. when user will click in x cross button popup will hide
+        document.querySelectorAll("img.close_img").forEach((closebtn) => {
+          closebtn.addEventListener("click", function () {
+            closebtn.closest(".auth-form").style.display = "none";
+          });
+        });
+
+        // code for open login and signup form when user will click in signup and login form main header
+        const signUp = document.querySelector(".hd_signup");
+        const login = document.querySelector(".hd_login");
+
+        signUp.addEventListener("click", () => {
+          signupForm.style.display = "flex";
+          loginForm.style.display = "none";
+        });
+
+        login.addEventListener("click", () => {
+          loginForm.style.display = "flex";
+          signupForm.style.display = "none";
+        });
+      });
+    </script>
+    <script>
+      //sign up.js
+      document.addEventListener("DOMContentLoaded", () => {
+        const signupForm = document
+          .getElementById("signupForm")
+          .querySelector("form");
+        const toastMessage = document.getElementById("toastMessage");
+
+        signupForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("signupEmail").value;
+          const password = document.getElementById("signupPassword").value;
+          const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+          // Basic validation
+          if (password !== confirmPassword) {
+            toastMessage.textContent = "Passwords do not match!";
+            toast.show();
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_signup",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: email,
+                  password: password,
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              // Use the email from signup form directly
+              const userEmail = email;
+
+              // Store user data in cookies
+              Cookies.set("userEmail", userEmail, { expires: 7, secure: true });
+              if (data.response && data.response.token) {
+                Cookies.set("authToken", data.response.token, {
+                  expires: 7,
+                  secure: true,
+                });
+              }
+
+              // Update UI
+              updateUIForLoggedInUser(userEmail);
+              document.getElementById("signupForm").style.display = "none";
+              toastMessage.textContent = "Signup successful!";
+              toast.show();
+
+              // Clear the form
+              signupForm.reset();
+              const currentPath = window.location.pathname;
+              if (
+                (currentPath === "/aircraft" || currentPath === "/aircraft/") &&
+                localStorage.getItem("aircraft_details")
+              ) {
+                window.location.href = "/checkout";
+              }
+            } else {
+              toastMessage.textContent =
+                "Signup failed: " + (data.message || "Unknown error");
+              toast.show();
+            }
+          } catch (error) {
+            toastMessage.textContent =
+              "An error occurred during signup. Please try again.";
+            toast.show();
+          }
+        });
+      });
+    </script>
+    <script>
+      //login.js
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginForm = document
+          .getElementById("loginForm")
+          .querySelector("form");
+        const toast = window.toast;
+        const toastMessage = document.getElementById("toastMessage");
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        // Check login status on page load
+        checkLoginStatus();
+
+        loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("loginEmail").value;
+          const password = document.getElementById("loginPassword").value;
+
+          try {
+            const response = await fetch(
+              "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_login",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: email,
+                  password: password,
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              if (data && data.response) {
+                const userEmail = email;
+
+                if (userEmail) {
+                  // Store user data in cookies
+                  Cookies.set("userEmail", userEmail, {
+                    expires: 7,
+                    secure: true,
+                  });
+                  if (data.response.token) {
+                    Cookies.set("authToken", data.response.token, {
+                      expires: 7,
+                      secure: true,
+                    });
+                  }
+
+                  // Update UI
+                  updateUIForLoggedInUser(userEmail);
+                  document.getElementById("loginForm").style.display = "none";
+                  toastMessage.textContent = "Login successful!";
+                  toast.show();
+
+                  // Clear the form
+                  loginForm.reset();
+                  const currentPath = window.location.pathname;
+                  if (
+                    (currentPath === "/aircraft" ||
+                      currentPath === "/aircraft/") &&
+                    localStorage.getItem("aircraft_details")
+                  ) {
+                    window.location.href = "/checkout";
+                  }
+                }
+              }
+            } else {
+              toastMessage.textContent =
+                "Login failed: " + (data.message || "Invalid credentials");
+              toast.show();
+            }
+          } catch (error) {
+            toastMessage.textContent =
+              "An error occurred during login. Please try again.";
+            toast.show();
+          }
+        });
+
+        // Handle logout
+        logoutBtn.addEventListener("click", () => {
+          // Clear cookies
+          Cookies.remove("userEmail");
+          Cookies.remove("authToken");
+
+          // Update UI for logged out user
+          updateUIForLoggedInUser(null);
+          toastMessage.textContent = "Logged out successfully!";
+          toast.show();
+        });
+
+        // Check login status
+        function checkLoginStatus() {
+          const userEmail = Cookies.get("userEmail");
+          const authToken = Cookies.get("authToken");
+
+          if (userEmail && authToken) {
+            updateUIForLoggedInUser(userEmail);
+          } else {
+            updateUIForLoggedInUser(null);
+          }
+        }
+      });
+    </script>
+    <script>
+      //forget_password.js
+      document.addEventListener("DOMContentLoaded", () => {
+        const forgotPasswordForm = document
+          .getElementById("forgotPasswordForm")
+          .querySelector("form");
+        const toast = window.toast;
+        const toastMessage = document.getElementById("toastMessage");
+
+        forgotPasswordForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("resetEmail").value;
+
+          try {
+            const response = await fetch(
+              "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_forgotpassword",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  email: email,
+                }),
+              }
+            );
+
+            const data = await response.json();
+            if (response.ok) {
+              toastMessage.textContent =
+                "Password reset instructions sent to your email!";
+              toast.show();
+              // Clear the form
+              forgotPasswordForm.reset();
+            } else {
+              toastMessage.textContent =
+                "Password reset failed: " + (data.message || "Unknown error");
+              toast.show();
+            }
+          } catch (error) {
+            toastMessage.textContent =
+              "An error occurred during password reset. Please try again.";
+            toast.show();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
