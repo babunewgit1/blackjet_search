@@ -3,7 +3,7 @@ const getStoredData = JSON.parse(sessionStorage.getItem("storeData"));
 
 // API endpoints
 const ONE_WAY_API =
-  "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_one_way_flight_blackjet";
+  "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_return_data_blackjet";
 const ROUND_TRIP_API =
   "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_round_trip_flight_blackjet";
 
@@ -38,76 +38,78 @@ function hideLoading() {
   }
 }
 
-// Function to make API call
-async function makeApiCall() {
-  try {
-    showLoading(); // Show loading screen before API call
+async function pollForAircraft(
+  flightRequestId,
+  apiUrl,
+  maxAttempts = 20,
+  interval = 3000
+) {
+  let attempt = 0;
+  while (attempt < maxAttempts) {
+    attempt++;
+    // Prepare request body
+    const requestBody = { flightrequest: flightRequestId };
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    const apiResponse = data.response;
+    console.log("Polling attempt", attempt, apiResponse.aircraft);
 
-    if (!getStoredData) {
-      console.error("No stored data found");
-      hideLoading(); // Hide loading screen if no data
-      return;
+    // If aircraft data is available and is a non-empty array, return it
+    if (
+      apiResponse &&
+      Array.isArray(apiResponse.aircraft) &&
+      apiResponse.aircraft.length > 0
+    ) {
+      return apiResponse;
     }
 
+    // Wait before next attempt
+    await new Promise((resolve) => setTimeout(resolve, interval));
+  }
+  // Show alert if max attempts reached
+  alert("Aircraft data not available");
+  return null;
+}
+
+async function makeApiCall() {
+  try {
+    showLoading();
+    const flightRequestId = sessionStorage.getItem("flightRequestId");
+    if (!flightRequestId) {
+      console.error("No flightRequestId found in session storage");
+      hideLoading();
+      return;
+    }
+    if (!getStoredData) {
+      console.error("No stored data found");
+      hideLoading();
+      return;
+    }
     const apiUrl =
       getStoredData.way.toLowerCase() === "one way"
         ? ONE_WAY_API
         : ROUND_TRIP_API;
 
-    // Prepare request body based on way type
-    const requestBody =
-      getStoredData.way.toLowerCase() === "one way"
-        ? {
-            "from airport id": getStoredData.fromId,
-            "to airport id": getStoredData.toId,
-            date_as_text: getStoredData.dateAsText,
-            time_as_text: getStoredData.timeAsText,
-            App_Out_Date_As_Text: getStoredData.appDate,
-            pax: getStoredData.pax,
-            date: getStoredData.timeStamp * 1000,
-          }
-        : {
-            "out-dep airport id": getStoredData.fromId,
-            "out-arr airport id": getStoredData.toId,
-            "ret-dep airport id": getStoredData.returnFromId,
-            "ret-arr airport id": getStoredData.returnToId,
-            "out-dep date": getStoredData.timeStamp * 1000,
-            "ret-date": getStoredData.timeStampReturn * 1000,
-            "out-pax": getStoredData.pax,
-            "ret-pax": getStoredData.paxReturn,
-            Dep_date_as_text: getStoredData.dateAsText,
-            Ret_date_as_text: getStoredData.returnDateAsText,
-            Dep_time_as_text: getStoredData.timeAsText,
-            Ret_time_as_text: getStoredData.timeAsTextReturn,
-            App_Out_Date_As_Text: getStoredData.appDate,
-            App_Ret_Date_As_Text: getStoredData.appDateReturn,
-          };
+    // Poll for aircraft data
+    const apiResponse = await pollForAircraft(flightRequestId, apiUrl);
 
-    // Make API call
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+    // Now you can use apiResponse.aircraft safely
+    console.log("Final aircraft data:", apiResponse);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const apiResponse = data.response;
-
-    // Display aircraft details in ac_result_cnt div
+    //Display aircraft details in ac_result_cnt div
     const acResultCnt = document.querySelector(".ac_result_cnt");
     const apiAircraft = apiResponse.aircraft;
     acResultCnt.innerHTML = "";
-    if (acResultCnt && data.response && data.response.aircraft) {
+    if (apiAircraft) {
       apiAircraft.forEach((aircraft) => {
         acResultCnt.innerHTML += `
           <div class="ap_aircraft">
-            <div class="ap_aircraft_details">  
+            <div class="ap_aircraft_details">
               <div class="apac_img">
                 <img src="${aircraft.aircraft_image_image}" alt="" />
               </div>
@@ -358,7 +360,7 @@ async function makeApiCall() {
     });
     //! creating map enddata-id
 
-    //? Code for right side content - start
+    /* //? Code for right side content - start
     const departureArea = document.querySelector(".ac_dep_loop");
     const arrivalArea = document.querySelector(".ac_arive_loop");
     const departureAirport = data.response.other_departure_airports;
@@ -515,15 +517,17 @@ async function makeApiCall() {
       });
     }
 
+    */
+
     //? Code for right side content - end
 
     return { data, fromAirport, toAirport };
   } catch (error) {
     console.error("Error making API call:", error);
-    hideLoading(); // Hide loading screen on error
+    hideLoading();
     throw error;
   } finally {
-    hideLoading(); // Hide loading screen after API call completes
+    hideLoading();
   }
 }
 
