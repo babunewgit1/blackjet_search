@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     index
       .search(query)
       .then(({ hits }) => {
+        // console.log("Algolia Search Results:", hits);
         if (hits.length > 0) {
           resultsContainer.innerHTML = hits
             .map(
@@ -97,7 +98,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 />
                 <p class="emfieldname">${escapeHTML(hit["All Fields"])}</p>
                 <p class="uniqueid">${escapeHTML(hit["unique id"])}</p>
-                <p class="shortcode">${escapeHTML(hit["AirportNameShort"])}</p>
+                <p class="shortcode">${
+                  hit["ICAO Code"]
+                    ? escapeHTML(hit["ICAO Code"])
+                    : hit["IATA Code"]
+                    ? escapeHTML(hit["IATA Code"])
+                    : hit["FAA Code"]
+                    ? escapeHTML(hit["FAA Code"])
+                    : ""
+                }</p>
+                <p class="cityname">${escapeHTML(hit["AirportCity"])}</p>
               </div>
             </div>`
             )
@@ -122,15 +132,18 @@ document.addEventListener("DOMContentLoaded", function () {
       const emfieldname = portElement.querySelector(".emfieldname").textContent;
       const uniqueid = portElement.querySelector(".uniqueid").textContent;
       const shortcode = portElement.querySelector(".shortcode").textContent;
+      const citycode = portElement.querySelector(".cityname").textContent;
 
       // Find the corresponding input and .portid
       const eminputBlock = portElement.closest(".eminputblock");
       const input = eminputBlock.querySelector(".algolio_input");
       const portidElement = eminputBlock.querySelector(".portid");
       const shortElement = eminputBlock.querySelector(".airportshort");
+      const airportCityName = eminputBlock.querySelector(".airportcity");
       input.value = emfieldname;
       portidElement.textContent = uniqueid;
       shortElement.textContent = shortcode;
+      airportCityName.textContent = citycode;
       const resultsContainer = eminputBlock.querySelector(".search-results");
       resultsContainer.innerHTML = "";
       resultsContainer.style.display = "none";
@@ -182,8 +195,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // code for round trip api submition
   oneWaySubmit.addEventListener("click", function () {
-    const formIdInput = document.querySelector("input.onewayform").value;
-    const toIdInput = document.querySelector("input.onewayto").value;
+    // const formIdInput = document.querySelector("input.onewayform").value;
+    // const toIdInput = document.querySelector("input.onewayto").value;
+    const formIdInput = document.querySelector(".fromcityname").textContent;
+    const toIdInput = document.querySelector(".tocityname").textContent;
     const fromId = document.querySelector(".onewayformid").textContent;
     const toId = document.querySelector(".onewaytoid").textContent;
     const fromShortCode = document.querySelector(".fromshort").textContent;
@@ -235,11 +250,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // code for round trip api submition
   roundTripSubmit.addEventListener("click", function () {
-    const formIdInput = document.querySelector(".rfrom").value;
-    const toIdInput = document.querySelector(".rto").value;
+    const formIdInput = document.querySelector(".rfromcityname").textContent;
+    const toIdInput = document.querySelector(".rtocityname").textContent;
 
-    const fromInputReturn = document.querySelector(".rto").value;
-    const toInputReturn = document.querySelector(".rfrom").value;
+    const fromInputReturn = document.querySelector(".rtocityname").textContent;
+    const toInputReturn = document.querySelector(".rfromcityname").textContent;
 
     const fromId = document.querySelector(".roundfromid").textContent;
     const toId = document.querySelector(".roundtoid").textContent;

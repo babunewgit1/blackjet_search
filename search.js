@@ -7,11 +7,45 @@ const ONE_WAY_API =
 const ROUND_TRIP_API =
   "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_round_trip_flight_blackjet";
 
+// Function to handle airport item clicks
+function handleAirportClick(airportId, storageKey) {
+  if (airportId) {
+    const currentData = JSON.parse(sessionStorage.getItem("storeData"));
+    currentData[storageKey] = airportId;
+    sessionStorage.setItem("storeData", JSON.stringify(currentData));
+    window.location.reload();
+  }
+}
+
+// Function to show loading screen
+function showLoading() {
+  const loadingScreen = document.createElement("div");
+  loadingScreen.className = "loading-screen";
+  loadingScreen.innerHTML = `
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  `;
+  document.body.appendChild(loadingScreen);
+}
+
+// Function to hide loading screen
+function hideLoading() {
+  const loadingScreen = document.querySelector(".loading-screen");
+  if (loadingScreen) {
+    loadingScreen.remove();
+  }
+}
+
 // Function to make API call
 async function makeApiCall() {
   try {
+    showLoading(); // Show loading screen before API call
+
     if (!getStoredData) {
       console.error("No stored data found");
+      hideLoading(); // Hide loading screen if no data
       return;
     }
 
@@ -64,7 +98,6 @@ async function makeApiCall() {
 
     const data = await response.json();
     const apiResponse = data.response;
-    console.log(apiResponse);
 
     // Display aircraft details in ac_result_cnt div
     const acResultCnt = document.querySelector(".ac_result_cnt");
@@ -84,10 +117,12 @@ async function makeApiCall() {
               </div>
               <div class="ap_aircraft_details_price">
                 <div class="ap_aircraft_toptip">
-                  <h4><sup>$</sup>${aircraft.price_number.toLocaleString()} </h4>
+                  <h4><sup>$</sup>${Math.round(
+                    aircraft.price_number
+                  ).toLocaleString()} </h4>
                   <div class="ap_aircraft_tip_text">
                   <span><img src="https://cdn.prod.website-files.com/66fa75fb0d726d65d059a42d/6825cd8e306cd13add181479_toltip.png" alt="" /></span>
-                  <p>Some Text will be here</p>
+                  <p>Total includes taxes and Government Imposed Passenger Fee and fees</p>
                   </div>
                 </div>
                 <p>${aircraft.flight_time_text}</p>
@@ -131,7 +166,10 @@ async function makeApiCall() {
     //! creating map start
     const fromAirport = {
       name: apiResponse.flight_legs[0].mobile_app_from_airport_name_short_text,
-      code: apiResponse.flight_legs[0].mobile_app_from_airport_icao_code_text,
+      code:
+        apiResponse.flight_legs[0].mobile_app_from_airport_faa_code_text ||
+        apiResponse.flight_legs[0].mobile_app_from_airport_iata_code_text ||
+        apiResponse.flight_legs[0].mobile_app_from_airport_icao_code_text,
       coordinates: [
         apiResponse.flight_legs[0].mobile_app_from_longitude_number,
         apiResponse.flight_legs[0].mobile_app_from_latitude_number,
@@ -140,7 +178,10 @@ async function makeApiCall() {
 
     const toAirport = {
       name: apiResponse.flight_legs[0].mobile_app_to_airport_name_short_text,
-      code: apiResponse.flight_legs[0].mobile_app_to_airport_icao_code_text,
+      code:
+        apiResponse.flight_legs[0].mobile_app_to_airport_faa_code_text ||
+        apiResponse.flight_legs[0].mobile_app_to_airport_iata_code_text ||
+        apiResponse.flight_legs[0].mobile_app_to_airport_icao_code_text,
       coordinates: [
         apiResponse.flight_legs[0].mobile_app_to_longitude_number,
         apiResponse.flight_legs[0].mobile_app_to_latitude_number,
@@ -315,13 +356,174 @@ async function makeApiCall() {
         padding: { top: 100, bottom: 100, left: 150, right: 150 },
       });
     });
+    //! creating map enddata-id
 
-    //! creating map end
+    //? Code for right side content - start
+    const departureArea = document.querySelector(".ac_dep_loop");
+    const arrivalArea = document.querySelector(".ac_arive_loop");
+    const departureAirport = data.response.other_departure_airports;
+    const arrivalAirport = data.response.other_arrival_airports;
+
+    console.log("arrivalAirport", arrivalAirport);
+
+    if (departureArea && data.response && departureAirport) {
+      departureArea.innerHTML = "";
+      // Sort by distance (ascending)
+      departureAirport
+        .slice() // create a shallow copy to avoid mutating the original array
+        .sort((a, b) => {
+          // Handle missing or non-numeric values gracefully
+          const distA =
+            typeof a.distance_to_original_departure_airport_number === "number"
+              ? a.distance_to_original_departure_airport_number
+              : Infinity;
+          const distB =
+            typeof b.distance_to_original_departure_airport_number === "number"
+              ? b.distance_to_original_departure_airport_number
+              : Infinity;
+          return distA - distB;
+        })
+        .forEach((depAirport) => {
+          const isActive =
+            getStoredData &&
+            getStoredData.fromId === depAirport.airport_id_text;
+          departureArea.innerHTML += `
+            <div class="depair_item depair_item_click ${
+              isActive ? "active" : ""
+            }" data-id="${depAirport.airport_id_text}">
+              <div class="short_code">
+                <p>${
+                  depAirport.faa_code_text ||
+                  depAirport.icao_code_text ||
+                  depAirport.iata_code_text ||
+                  "N/A"
+                }
+              </div>
+              <div class="depair_item_wrapper">
+                <div class="depair_item_left">
+                <h3>${depAirport.airport_name_short_text}</h3>
+                <p>
+                  ${depAirport.location_label_text} <span></span>
+                  ${
+                    typeof depAirport.distance_to_original_departure_airport_number ===
+                    "number"
+                      ? depAirport.distance_to_original_departure_airport_number.toFixed(
+                          1
+                        )
+                      : "N/A"
+                  } mi
+                </p>
+              </div>
+              <div class="depair_item_right">
+                <p>$${
+                  depAirport.light_jet_price_number
+                    ? depAirport.light_jet_price_number.toLocaleString()
+                    : "N/A"
+                }</p>
+              </div>
+              </div>
+            </div>
+          `;
+        });
+
+      // Add click event listeners to departure items
+      document.querySelectorAll(".depair_item_click").forEach((item) => {
+        item.addEventListener("click", function () {
+          // Remove active class from all departure items
+          document
+            .querySelectorAll(".depair_item_click")
+            .forEach((i) => i.classList.remove("active"));
+          // Add active class to clicked item
+          this.classList.add("active");
+          const airportId = this.getAttribute("data-id");
+          handleAirportClick(airportId, "fromId");
+        });
+      });
+    }
+
+    if (arrivalArea && data.response && arrivalAirport) {
+      arrivalArea.innerHTML = "";
+      // Sort by distance (ascending)
+      arrivalAirport
+        .slice() // create a shallow copy to avoid mutating the original array
+        .sort((a, b) => {
+          // Handle missing or non-numeric values gracefully
+          const distA =
+            typeof a.distance_to_original_departure_airport_number === "number"
+              ? a.distance_to_original_departure_airport_number
+              : Infinity;
+          const distB =
+            typeof b.distance_to_original_departure_airport_number === "number"
+              ? b.distance_to_original_departure_airport_number
+              : Infinity;
+          return distA - distB;
+        })
+        .forEach((arrAirport) => {
+          const isActive =
+            getStoredData && getStoredData.toId === arrAirport.airport_id_text;
+          arrivalArea.innerHTML += `
+            <div class="depair_item airval_item_click ${
+              isActive ? "active" : ""
+            }" data-id="${arrAirport.airport_id_text}">
+              <div class="short_code">
+                <p>${
+                  arrAirport.faa_code_text ||
+                  arrAirport.icao_code_text ||
+                  arrAirport.iata_code_text ||
+                  "N/A"
+                }
+              </div>
+              <div class="depair_item_wrapper">
+                <div class="depair_item_left">
+                <h3>${arrAirport.airport_name_short_text}</h3>
+                <p>
+                  ${arrAirport.location_label_text} <span></span>
+                  ${
+                    typeof arrAirport.distance_to_original_departure_airport_number ===
+                    "number"
+                      ? arrAirport.distance_to_original_departure_airport_number.toFixed(
+                          1
+                        )
+                      : "N/A"
+                  } mi
+                </p>
+              </div>
+              <div class="depair_item_right">
+                <p>$${
+                  arrAirport.light_jet_price_number
+                    ? arrAirport.light_jet_price_number.toLocaleString()
+                    : "N/A"
+                }</p>
+              </div>
+              </div>
+            </div>
+          `;
+        });
+
+      // Add click event listeners to arrival items
+      document.querySelectorAll(".airval_item_click").forEach((item) => {
+        item.addEventListener("click", function () {
+          // Remove active class from all arrival items
+          document
+            .querySelectorAll(".airval_item_click")
+            .forEach((i) => i.classList.remove("active"));
+          // Add active class to clicked item
+          this.classList.add("active");
+          const airportId = this.getAttribute("data-id");
+          handleAirportClick(airportId, "toId");
+        });
+      });
+    }
+
+    //? Code for right side content - end
 
     return { data, fromAirport, toAirport };
   } catch (error) {
     console.error("Error making API call:", error);
+    hideLoading(); // Hide loading screen on error
     throw error;
+  } finally {
+    hideLoading(); // Hide loading screen after API call completes
   }
 }
 

@@ -56,20 +56,18 @@
   white-space: nowrap;
 }
 
+.acls_right_way {
+  text-align: right;
+}
+
 .ffullname,
 .tfullname {
   margin-left: 10px;
   display: inline-block;
-  width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
   top: 7px;
-}
-
-.oneway_input .ffullname,
-.oneway_input .tfullname {
-  width: 200px;
 }
 
 .acls_left_way_icon {
@@ -446,6 +444,11 @@ p.uniqueid {
   opacity: 0.7;
 }
 
+.cityname,
+.airportcity {
+  display: none;
+}
+
 /* css for which element are generated from api */
 .ap_aircraft {
   background-color: #fff;
@@ -525,6 +528,8 @@ p.uniqueid {
   align-items: center;
   gap: 8px;
   justify-content: center;
+  position: relative;
+  left: 10px;
 }
 
 .ap_aircraft_tip_text {
@@ -560,13 +565,15 @@ p.uniqueid {
   text-align: center;
   padding: 5px;
   border-radius: 4px;
-  left: -20px;
+  left: calc(0% - 255px);
   top: -44px;
   color: #fff !important;
   transform: scaleY(0);
   transform-origin: bottom;
   transition: all 0.1s ease;
   z-index: 99;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .ap_aircraft_tip_text p:after {
@@ -574,12 +581,12 @@ p.uniqueid {
   display: block;
   width: 1px;
   height: 1px;
-  border-top: 10px solid #545454;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
+  border-top: 6px solid #545454;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
   position: absolute;
-  left: 17px;
-  bottom: -10px;
+  right: 30px;
+  bottom: -7px;
 }
 
 .ap_aircraft_tip_text:hover p {
@@ -645,6 +652,11 @@ p.uniqueid {
   opacity: 0.7;
 }
 
+.ac_result {
+  height: calc(100vh - 165px);
+  background-color: #f1f1f1;
+}
+
 .ac_result_cnt {
   height: 700px;
   overflow-y: auto;
@@ -655,10 +667,9 @@ p.uniqueid {
   border-color: #8a8a8a;
 }
 
-/* code for map */
-
+/* code for map - start */
 #map {
-  height: 785px;
+  height: 100%;
   width: 100%;
 }
 
@@ -666,13 +677,13 @@ p.uniqueid {
   display: flex;
   align-items: center;
   font-family: Arial, sans-serif;
-  color: white; /* Text inside marker is white */
+  color: white;
   font-size: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Optional: subtle shadow for labels */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .airport-info {
-  background-color: #333a42; /* Dark grey - contrasts well with light map */
+  background-color: #333a42;
   padding: 5px 8px;
   border-radius: 3px 0 0 3px;
   display: flex;
@@ -683,16 +694,395 @@ p.uniqueid {
   width: 14px;
   height: 14px;
   margin-right: 5px;
-  transform: rotate(270deg); /* Pointing left */
-  fill: white; /* Ensure icon inside label is white */
+  transform: rotate(270deg);
+  fill: white;
 }
 .airport-info.destination .plane-icon {
   transform: rotate(90deg);
 }
 
 .airport-code {
-  background-color: #000000; /* Black - contrasts well */
+  background-color: #000000;
   padding: 5px 8px;
   border-radius: 0 3px 3px 0;
   font-weight: bold;
 }
+
+/* code for map - end */
+
+/* code for right side - start */
+.ac_result_right {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.depair_item_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.depair_item_left h3 {
+  margin: 0;
+  font-size: 17px;
+  font-family: Knul, sans-serif;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: #5d5d5d;
+  line-height: 1;
+}
+
+.depair_item_left p {
+  font-size: 13px;
+  color: #5d5d5d;
+  font-weight: 600;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.depair_item_right p {
+  font-size: 16px;
+  color: #000;
+  font-family: Knul, sans-serif;
+  font-weight: 500;
+  border: 1px solid #000;
+  line-height: 1;
+  padding: 5px 12px 6px 12px;
+}
+
+.depair_item_wrapper {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.depair_item_left p span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #5d5d5d;
+  border-radius: 50%;
+  margin: 0px 4px;
+}
+
+.short_code p {
+  font-size: 16px;
+  font-family: Knul, sans-serif;
+  color: #5d5d5d;
+  border: 1px solid #5d5d5d;
+  font-weight: 500;
+  padding: 3px 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding-bottom: 4px;
+  text-align: center;
+  margin: 10px 0px;
+}
+
+.short_code p:hover {
+  background-color: #5d5d5d;
+  color: #fff;
+}
+
+.depair_item_wrapper:hover {
+  background-color: #5d5d5d;
+}
+
+.depair_item_wrapper:hover .depair_item_left h3,
+.depair_item_wrapper:hover .depair_item_left p {
+  color: #ffffff;
+}
+
+.depair_item_wrapper:hover .depair_item_right p {
+  color: #fff;
+  border-color: #fff;
+}
+
+.depair_item_wrapper:hover .depair_item_left p span {
+  background-color: #fff;
+}
+
+.depair_item.active .depair_item_left h3,
+.depair_item.active .depair_item_left p {
+  color: #ffffff;
+}
+
+.depair_item.active .depair_item_right p {
+  color: #fff;
+  border-color: #fff;
+}
+
+.depair_item.active .depair_item_left p span {
+  background-color: #fff;
+}
+
+.depair_item.active {
+  background-color: #5d5d5d;
+}
+
+.ac_dep_heading_right {
+  transition: all 0.2s ease;
+}
+
+.active_rightbar .ac_dep_heading_right {
+  transform: rotate(-180deg);
+}
+
+.active_rightbar .ac_dep_heading {
+  flex-direction: column-reverse;
+  gap: 15px;
+}
+
+.active_rightbar .ac_dep_heading_left_name,
+.active_rightbar .ac_dep_heading_left_idrop {
+  display: none;
+}
+
+.ac_result_active {
+  grid-template-columns: 1fr 1.9fr 0.1fr;
+}
+
+.active_rightbar .depair_item_wrapper {
+  display: none;
+}
+.short_code {
+  display: none;
+}
+
+.active_rightbar .short_code {
+  display: block;
+}
+
+#map {
+  width: 825px !important;
+  margin: auto;
+  background-color: #fff;
+}
+
+.mapboxgl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.ac_result_map {
+  background-color: #fff;
+}
+
+.active_rightbar .see_more_text {
+  display: none;
+}
+
+.active_rightbar .ac_dep_see {
+  padding: 14px 0.625rem;
+  margin-top: 12px !important;
+}
+
+.dep_hover_cnt {
+  box-shadow: rgba(0, 0, 0, 0.08) -30px 10px 50px 15px;
+  border-radius: 4px;
+  padding: 16px;
+  z-index: 99;
+  left: 0;
+  top: 35px;
+}
+
+.ac_dep_heading_left_idrop:hover .dep_hover_cnt {
+  display: block;
+}
+
+.arr_hover_cnt::after {
+  left: 40% !important;
+}
+
+p.dep_hover_heading {
+  font-size: 16px;
+  font-family: Knul, sans-serif;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  color: rgb(38, 69, 98);
+}
+
+p.dep_hover_para {
+  font-size: 14px;
+  font-family: Knul, sans-serif;
+  line-height: 1.2;
+  color: rgb(70, 96, 121);
+}
+
+.dep_hover_cnt:after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 1px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #fff;
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translate(-50%, -50%);
+}
+
+.see_more_arrow {
+  transition: all 0.3s ease;
+}
+
+.expanded .see_more_arrow {
+  transform: rotate(180deg);
+}
+
+.ac_result_option_oval {
+  transition: all 0.3s ease;
+}
+
+.active_fleet .ac_result_option_oval {
+  border-width: 6px;
+}
+
+.acls_left_way .acls_right {
+  display: none;
+}
+
+/* code for right side - end */
+
+/* code for loading screen - start */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner p {
+  color: #333;
+  font-size: 16px;
+  margin: 0;
+}
+/* code for loading screen - end */
+
+/*
+====================================
+    Responsive Code Start
+====================================
+*/
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+}
+
+@media screen and (min-width: 576px) and (max-width: 767px) {
+}
+
+@media screen and (max-width: 576px) {
+  .desktop_setting {
+    display: none;
+  }
+
+  .acls_left_way .acls_right {
+    display: block;
+  }
+
+  .acls_left_way {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .acls_element {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .acls_left_way ul {
+    padding: 5px;
+  }
+
+  .acls_left_way ul li {
+    padding: 2px 4px;
+    padding-bottom: 2px;
+    padding-bottom: 3px;
+  }
+
+  .oneway_input {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .acls_left_way_place {
+    grid-column: span 2;
+    grid-template-columns: 1fr 25px 1fr;
+  }
+
+  .ffullname,
+  .tfullname {
+    margin: 0;
+  }
+
+  .tshortname {
+    margin-right: 0;
+  }
+
+  .acls_left_way p,
+  .fshortname,
+  .tshortname {
+    font-size: 14px;
+  }
+
+  .fshortname,
+  .tshortname {
+    padding: 1px 4px;
+  }
+
+  .acls_left_way p img {
+    display: none;
+  }
+
+  .acls_left_way_place {
+    padding: 4px;
+  }
+
+  .acls_right_way p {
+    width: 100%;
+  }
+
+  .ffullname,
+  .tfullname {
+    top: 0;
+  }
+}
+
+/*
+====================================
+    Responsive Code End
+====================================
+*/
