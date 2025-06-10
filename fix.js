@@ -27,16 +27,19 @@ function handleSearchBoxToggle(buttonSelector) {
   const preSearchBox = document.querySelector(".acl_search");
   const readSearchBox = document.querySelector(".ac_search_popup");
   const popClose = document.querySelector(".acls_popup_header_right span");
+  const body = document.querySelector("body");
 
   if (button && preSearchBox && readSearchBox && popClose) {
     button.addEventListener("click", function () {
       preSearchBox.style.display = "none";
       readSearchBox.style.display = "block";
+      body.style.overflow = "hidden";
     });
 
     popClose.addEventListener("click", function () {
       preSearchBox.style.display = "block";
       readSearchBox.style.display = "none";
+      body.style.overflow = "auto";
     });
   }
 }
@@ -464,3 +467,16 @@ fleetItem.forEach((fleet) => {
     fleet.classList.add("active_fleet");
   });
 });
+
+// mobile version Departure and Arrival arrow function
+function controlList(arrowIcon, area) {
+  const arrowtigger = document.querySelector(arrowIcon);
+  const tiggerArea = document.querySelector(area);
+  arrowtigger.addEventListener("click", function () {
+    this.classList.toggle("rotedArrow");
+    tiggerArea.classList.toggle("areatoggle");
+  });
+}
+
+controlList(".deep_more", ".ac_dept_block_cnt");
+controlList(".arrival_more", ".ac_arrive_block_cnt");

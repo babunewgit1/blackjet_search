@@ -194,7 +194,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const roundTripSubmit = document.querySelector(".roundtrip");
 
   // code for round trip api submition
-  oneWaySubmit.addEventListener("click", async function () {
+  oneWaySubmit.addEventListener("click", function () {
+    // const formIdInput = document.querySelector("input.onewayform").value;
+    // const toIdInput = document.querySelector("input.onewayto").value;
     const formIdInput = document.querySelector(".fromcityname").textContent;
     const toIdInput = document.querySelector(".tocityname").textContent;
     const fromId = document.querySelector(".onewayformid").textContent;
@@ -221,73 +223,26 @@ document.addEventListener("DOMContentLoaded", function () {
       fromShortCode &&
       toShortCode
     ) {
-      // Show preloader
-      document.getElementById("preloader").style.display = "flex";
+      const storeData = {
+        way: "one way",
+        fromId,
+        toId,
+        dateAsText,
+        timeAsText,
+        pax,
+        appDate,
+        timeStamp,
+        formIdInput,
+        toIdInput,
+        fromShortCode,
+        toShortCode,
+      };
 
-      try {
-        // Call the API
-        const apiResponse = await fetch(
-          "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_one_way_flight_blackjet",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              "from airport id": fromId,
-              "to airport id": toId,
-              date_as_text: dateAsText,
-              time_as_text: timeAsText,
-              App_Out_Date_As_Text: appDate,
-              pax: pax,
-              date: timeStamp * 1000,
-            }),
-          }
-        );
-
-        if (!apiResponse.ok) {
-          throw new Error("API request failed");
-        }
-
-        const apiData = await apiResponse.json();
-
-        // Save flightRequestId to session storage
-        if (apiData && apiData.response && apiData.response.flightrequest) {
-          sessionStorage.setItem(
-            "flightRequestId",
-            apiData.response.flightrequest
-          );
-        }
-
-        // Save the rest of the data as before
-        const storeData = {
-          way: "one way",
-          fromId,
-          toId,
-          dateAsText,
-          timeAsText,
-          pax,
-          appDate,
-          timeStamp,
-          formIdInput,
-          toIdInput,
-          fromShortCode,
-          toShortCode,
-        };
-
-        sessionStorage.setItem("storeData", JSON.stringify(storeData));
-        if (localStorage.getItem("aircraft_details")) {
-          localStorage.removeItem("aircraft_details");
-        }
-
-        // Hide preloader and redirect
-        document.getElementById("preloader").style.display = "none";
-        window.location.href = `/aircraft`;
-      } catch (err) {
-        document.getElementById("preloader").style.display = "none";
-        alert("There was an error processing your request. Please try again.");
-        console.error(err);
+      sessionStorage.setItem("storeData", JSON.stringify(storeData));
+      if (localStorage.getItem("aircraft_details")) {
+        localStorage.removeItem("aircraft_details");
       }
+      window.location.href = `/aircraft`;
     } else {
       alert("Please fill up the form properly");
     }

@@ -1,9 +1,13 @@
+//! Calling the 1st API -- Start --
+
+//! Calling the 1st API -- End --
+
 // Get stored data from session storage
 const getStoredData = JSON.parse(sessionStorage.getItem("storeData"));
 
 // API endpoints
 const ONE_WAY_API =
-  "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_return_data_blackjet";
+  "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_one_way_flight_blackjet";
 const ROUND_TRIP_API =
   "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_round_trip_flight_blackjet";
 
@@ -40,14 +44,14 @@ function hideLoading() {
 
 async function pollForAircraft(
   flightRequestId,
-  apiUrl,
+  apiUrl = "https://operators-dashboard.bubbleapps.io/api/1.1/wf/webflow_return_data_blackjet",
   maxAttempts = 20,
   interval = 3000
 ) {
   let attempt = 0;
   while (attempt < maxAttempts) {
     attempt++;
-    // Prepare request body
+    console.log(`Polling attempt: ${attempt}`);
     const requestBody = { flightrequest: flightRequestId };
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -57,9 +61,8 @@ async function pollForAircraft(
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data = await response.json();
     const apiResponse = data.response;
-    console.log("Polling attempt", attempt, apiResponse.aircraft);
 
-    // If aircraft data is available and is a non-empty array, return it
+    console.log(apiResponse);
     if (
       apiResponse &&
       Array.isArray(apiResponse.aircraft) &&
@@ -67,67 +70,118 @@ async function pollForAircraft(
     ) {
       return apiResponse;
     }
-
-    // Wait before next attempt
     await new Promise((resolve) => setTimeout(resolve, interval));
   }
-  // Show alert if max attempts reached
-  alert("Aircraft data not available");
+  alert("No aircraft data is available");
   return null;
 }
 
+// Function to make API call
 async function makeApiCall() {
   try {
-    showLoading();
-    const flightRequestId = sessionStorage.getItem("flightRequestId");
-    if (!flightRequestId) {
-      console.error("No flightRequestId found in session storage");
-      hideLoading();
-      return;
-    }
+    showLoading(); // Show loading screen before API call
+
     if (!getStoredData) {
       console.error("No stored data found");
-      hideLoading();
+      hideLoading(); // Hide loading screen if no data
       return;
     }
+
     const apiUrl =
       getStoredData.way.toLowerCase() === "one way"
         ? ONE_WAY_API
         : ROUND_TRIP_API;
 
-    // Poll for aircraft data
-    const apiResponse = await pollForAircraft(flightRequestId, apiUrl);
+    // Prepare request body based on way type
+    const requestBody =
+      getStoredData.way.toLowerCase() === "one way"
+        ? {
+            "from airport id": getStoredData.fromId,
+            "to airport id": getStoredData.toId,
+            date_as_text: getStoredData.dateAsText,
+            time_as_text: getStoredData.timeAsText,
+            App_Out_Date_As_Text: getStoredData.appDate,
+            pax: getStoredData.pax,
+            date: getStoredData.timeStamp * 1000,
+          }
+        : {
+            "out-dep airport id": getStoredData.fromId,
+            "out-arr airport id": getStoredData.toId,
+            "ret-dep airport id": getStoredData.returnFromId,
+            "ret-arr airport id": getStoredData.returnToId,
+            "out-dep date": getStoredData.timeStamp * 1000,
+            "ret-date": getStoredData.timeStampReturn * 1000,
+            "out-pax": getStoredData.pax,
+            "ret-pax": getStoredData.paxReturn,
+            Dep_date_as_text: getStoredData.dateAsText,
+            Ret_date_as_text: getStoredData.returnDateAsText,
+            Dep_time_as_text: getStoredData.timeAsText,
+            Ret_time_as_text: getStoredData.timeAsTextReturn,
+            App_Out_Date_As_Text: getStoredData.appDate,
+            App_Ret_Date_As_Text: getStoredData.appDateReturn,
+          };
 
-    // Now you can use apiResponse.aircraft safely
-    console.log("Final aircraft data:", apiResponse);
+    // First API call
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-    //Display aircraft details in ac_result_cnt div
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const apiResponse = data.response;
+
+    // Get flightrequest from first API response
+    const flightRequestId = apiResponse.flightrequest;
+    console.log("Flight Request ID from 1st API:", flightRequestId);
+    if (!flightRequestId) {
+      alert("No flightrequest ID returned from the first API call.");
+      hideLoading();
+      return;
+    }
+
+    // Poll the second API for aircraft data
+    const aircraftResponse = await pollForAircraft(flightRequestId);
+    if (!aircraftResponse) {
+      hideLoading();
+      return;
+    }
+
+    // Use aircraftResponse.aircraft for the rest of your code
     const acResultCnt = document.querySelector(".ac_result_cnt");
-    const apiAircraft = apiResponse.aircraft;
+    const apiAircraft = aircraftResponse.aircraft;
     acResultCnt.innerHTML = "";
-    if (apiAircraft) {
+    if (acResultCnt && apiAircraft) {
       apiAircraft.forEach((aircraft) => {
         acResultCnt.innerHTML += `
           <div class="ap_aircraft">
-            <div class="ap_aircraft_details">
+            <div class="ap_aircraft_details">  
               <div class="apac_img">
                 <img src="${aircraft.aircraft_image_image}" alt="" />
               </div>
-              <div class="apac_details">
-                <h4>${aircraft.category_text}</h4>
-                <p>${aircraft.models_text}</p>
-              </div>
-              <div class="ap_aircraft_details_price">
-                <div class="ap_aircraft_toptip">
-                  <h4><sup>$</sup>${Math.round(
-                    aircraft.price_number
-                  ).toLocaleString()} </h4>
-                  <div class="ap_aircraft_tip_text">
-                  <span><img src="https://cdn.prod.website-files.com/66fa75fb0d726d65d059a42d/6825cd8e306cd13add181479_toltip.png" alt="" /></span>
-                  <p>Total includes taxes and Government Imposed Passenger Fee and fees</p>
-                  </div>
+              <div class="price_block_gen">
+                <div class="apac_details">
+                  <h4>${aircraft.category_text}</h4>
+                  <p>${aircraft.models_text}</p>
                 </div>
-                <p>${aircraft.flight_time_text}</p>
+                <div class="ap_aircraft_details_price">
+                  <div class="ap_aircraft_toptip">
+                    <h4><sup>$</sup>${Math.round(
+                      aircraft.price_number
+                    ).toLocaleString()} </h4>
+                    <div class="ap_aircraft_tip_text">
+                    <span><img src="https://cdn.prod.website-files.com/66fa75fb0d726d65d059a42d/6825cd8e306cd13add181479_toltip.png" alt="" /></span>
+                    <p>Total includes taxes and Government Imposed Passenger Fee and fees</p>
+                    </div>
+                  </div>
+                  <p>${aircraft.flight_time_text}</p>
+                </div>
               </div>
             </div>
             <div class="ap_aircraft_message">
@@ -144,8 +198,22 @@ async function makeApiCall() {
           </div>
         `;
       });
+      // Show/hide .see_arrow based on .ap_aircraft count
+      const seeArrow = document.querySelector(".see_arrow");
+      const aircraftItems = acResultCnt.querySelectorAll(".ap_aircraft");
+      if (seeArrow) {
+        if (aircraftItems.length > 3) {
+          seeArrow.style.display = "block";
+        } else {
+          seeArrow.style.display = "none";
+        }
+      }
 
-      // Add click event handlers after adding the aircraft elements
+      seeArrow.addEventListener("click", function () {
+        seeArrow.classList.toggle("roted");
+        document.querySelector(".ac_result_cnt").classList.toggle("release");
+      });
+
       document.querySelectorAll(".ap_aircraft").forEach((aircraft) => {
         aircraft.addEventListener("click", function () {
           const continueDiv = this.querySelector(".ap_aircraft_continue");
@@ -154,7 +222,6 @@ async function makeApiCall() {
           this.classList.toggle("active");
         });
       });
-
       document
         .querySelectorAll(".ap_aircraft_message_right button")
         .forEach((button) => {
@@ -360,15 +427,13 @@ async function makeApiCall() {
     });
     //! creating map enddata-id
 
-    /* //? Code for right side content - start
+    //? Code for right side content - start
     const departureArea = document.querySelector(".ac_dep_loop");
     const arrivalArea = document.querySelector(".ac_arive_loop");
-    const departureAirport = data.response.other_departure_airports;
-    const arrivalAirport = data.response.other_arrival_airports;
-
-    console.log("arrivalAirport", arrivalAirport);
-
-    if (departureArea && data.response && departureAirport) {
+    const departureAirport = aircraftResponse.other_departure_airports;
+    const arrivalAirport = aircraftResponse.other_arrival_airports;
+    aircraftResponse;
+    if (departureArea && departureAirport) {
       departureArea.innerHTML = "";
       // Sort by distance (ascending)
       departureAirport
@@ -435,21 +500,34 @@ async function makeApiCall() {
           document
             .querySelectorAll(".depair_item_click")
             .forEach((i) => i.classList.remove("active"));
+
           // Add active class to clicked item
           this.classList.add("active");
+
           const airportId = this.getAttribute("data-id");
           handleAirportClick(airportId, "fromId");
+
+          // Check if item count is more than 5
+          const itemCount =
+            document.querySelectorAll(".depair_item_click").length;
+          const seeMoreElement = document.querySelector(
+            ".ac_dep_see.seemore_dep"
+          );
+
+          if (itemCount > 5 && seeMoreElement) {
+            seeMoreElement.style.display = "block";
+          } else if (seeMoreElement) {
+            seeMoreElement.style.display = "none"; // Optional
+          }
         });
       });
     }
 
-    if (arrivalArea && data.response && arrivalAirport) {
+    if (arrivalArea && arrivalAirport) {
       arrivalArea.innerHTML = "";
-      // Sort by distance (ascending)
       arrivalAirport
-        .slice() // create a shallow copy to avoid mutating the original array
+        .slice()
         .sort((a, b) => {
-          // Handle missing or non-numeric values gracefully
           const distA =
             typeof a.distance_to_original_departure_airport_number === "number"
               ? a.distance_to_original_departure_airport_number
@@ -509,25 +587,38 @@ async function makeApiCall() {
           document
             .querySelectorAll(".airval_item_click")
             .forEach((i) => i.classList.remove("active"));
+
           // Add active class to clicked item
           this.classList.add("active");
+
           const airportId = this.getAttribute("data-id");
           handleAirportClick(airportId, "toId");
+
+          // Check if item count is more than 5
+          const itemCount =
+            document.querySelectorAll(".airval_item_click").length;
+          const seeMoreElement = document.querySelector(
+            ".ac_dep_see.seemore_arive"
+          );
+
+          if (itemCount > 5 && seeMoreElement) {
+            seeMoreElement.style.display = "block";
+          } else if (seeMoreElement) {
+            seeMoreElement.style.display = "none"; // Optional: hide if <= 5
+          }
         });
       });
     }
-
-    */
 
     //? Code for right side content - end
 
     return { data, fromAirport, toAirport };
   } catch (error) {
     console.error("Error making API call:", error);
-    hideLoading();
+    hideLoading(); // Hide loading screen on error
     throw error;
   } finally {
-    hideLoading();
+    hideLoading(); // Hide loading screen after API call completes
   }
 }
 
