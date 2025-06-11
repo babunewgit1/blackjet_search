@@ -70,24 +70,6 @@ if (storedData) {
   });
 }
 
-//! showing data from session storage in search input.
-if (storedData.way === "one way") {
-  document.querySelector(".ofromname").textContent = storedData.formIdInput;
-  document.querySelector(".oshortname").textContent = storedData.fromShortCode;
-  document.querySelector(".otoname").textContent = storedData.toIdInput;
-  document.querySelector(".otonameshort").textContent = storedData.toShortCode;
-  document.querySelector(".otodate").textContent = storedData.dateAsText;
-  document.querySelector(".otopax").textContent = storedData.pax;
-} else {
-  document.querySelector(".tfrom").textContent = storedData.formIdInput;
-  document.querySelector(".tshort").textContent = storedData.fromShortCode;
-  document.querySelector(".tto").textContent = storedData.toIdInput;
-  document.querySelector(".tshort").textContent = storedData.toShortCode;
-  document.querySelector(".tofromdate").textContent = storedData.dateAsText;
-  document.querySelector(".totodate").textContent = storedData.returnDateAsText;
-  document.querySelector(".tpax").textContent = storedData.pax;
-}
-
 //!=================================================================
 //? Implementing pax counter increase and decrease.
 //? Implementing algolio search.
@@ -423,6 +405,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+//! showing data from session storage in search input.
+if (storedData.way === "one way") {
+  document.querySelector(".ofromname").textContent = storedData.formIdInput;
+  document.querySelector(".oshortname").textContent = storedData.fromShortCode;
+  document.querySelector(".otoname").textContent = storedData.toIdInput;
+  document.querySelector(".otonameshort").textContent = storedData.toShortCode;
+  document.querySelector(".otodate").textContent = storedData.dateAsText;
+  document.querySelector(".otopax").textContent = storedData.pax;
+} else {
+  document.querySelector(".tfrom").textContent = storedData.formIdInput;
+  document.querySelector(".tshort").textContent = storedData.fromShortCode;
+  document.querySelector(".tto").textContent = storedData.toIdInput;
+  document.querySelector(".tshort").textContent = storedData.toShortCode;
+  document.querySelector(".tofromdate").textContent = storedData.dateAsText;
+  document.querySelector(".totodate").textContent = storedData.returnDateAsText;
+  document.querySelector(".tpax").textContent = storedData.pax;
+}
 
 // right side toggle bar
 const rightSideToggle = document.querySelector(".ac_dep_heading_right");

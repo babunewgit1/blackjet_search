@@ -653,7 +653,7 @@ p.uniqueid {
 }
 
 .ac_result {
-  height: calc(100vh - 165px);
+  /* height: calc(100vh - 165px); */
   background-color: #f1f1f1;
 }
 
@@ -852,10 +852,8 @@ p.uniqueid {
   display: block;
 }
 
-#map {
-  width: 825px !important;
-  margin: auto;
-  background-color: #fff;
+.active .short_code p {
+  color: #fff;
 }
 
 .mapboxgl-canvas {
@@ -1018,6 +1016,10 @@ p.dep_hover_para {
   display: block !important;
 }
 
+.ac_result_left {
+  min-height: 700px;
+}
+
 /* code for loading screen - end */
 
 /*
@@ -1025,16 +1027,404 @@ p.dep_hover_para {
     Responsive Code Start
 ====================================
 */
-@media screen and (min-width: 992px) and (max-width: 1200px) {
+@media screen and (min-width: 1340px) and (max-width: 1500px) {
+  .ap_aircraft_details {
+    padding: 6px;
+    grid-template-columns: 115px 1fr;
+  }
+
+  .apac_img img {
+    height: 74px;
+  }
+
+  .apac_details h4 {
+    font-size: 18px;
+  }
+
+  .apac_details p {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .price_block_gen {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .ap_aircraft_toptip h4 {
+    font-size: 18px;
+  }
+
+  .ap_aircraft_details_price p {
+    font-size: 14px;
+    margin-left: 10px;
+  }
+
+  .ap_aircraft_message {
+    grid-template-columns: 1fr 99px;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1340px) {
+  .ac_result_left {
+    padding-left: 10px;
+  }
+
+  .ac_result_cnt {
+    margin-top: 0.5rem;
+  }
+
+  .ap_aircraft_details {
+    padding: 10px;
+    display: block;
+  }
+
+  .apac_details {
+    padding: 0;
+  }
+
+  .price_block_gen {
+    grid-template-columns: 1fr 95px;
+  }
+
+  .ap_aircraft_message {
+    grid-template-columns: 1fr 97px;
+  }
+
+  .apac_details p {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .ap_aircraft_toptip h4 {
+    font-size: 18px;
+  }
+
+  .ap_aircraft_details_price p {
+    font-size: 14px;
+    margin-top: 0px;
+  }
+
+  .ap_aircraft_message_left p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .ap_aircraft_message_right button {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .ac_result_option {
+    grid-column-gap: 2rem;
+  }
+
+  .ac_result_option_text {
+    font-size: 14px;
+  }
+
+  .depair_item_wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .dep_hover_cnt {
+    width: 12.75rem;
+  }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
+  .desktop_setting {
+    display: none;
+  }
+
+  .acls_left_way .acls_right {
+    display: block;
+  }
+
+  .acls_left_way {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .acls_element {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .acls_left_way ul {
+    padding: 5px;
+  }
+
+  .acls_left_way ul li {
+    padding: 2px 4px;
+    padding-bottom: 2px;
+    padding-bottom: 3px;
+  }
+
+  .oneway_input {
+    grid-template-columns: 2fr 1fr 1fr 1fr !important;
+  }
+
+  .acls_left_way_place {
+    grid-column: span 2;
+    grid-template-columns: 1fr 25px 1fr;
+  }
+
+  .ffullname,
+  .tfullname {
+    margin: 0;
+  }
+
+  .tshortname {
+    margin-right: 0;
+  }
+
+  .acls_left_way p,
+  .fshortname,
+  .tshortname {
+    font-size: 14px;
+  }
+
+  .fshortname,
+  .tshortname {
+    padding: 1px 4px;
+    position: relative;
+    top: -3px;
+  }
+
+  .acls_left_way p img {
+    display: none;
+  }
+
+  .acls_left_way_place {
+    padding: 4px;
+  }
+
+  .acls_right_way p {
+    width: 100%;
+  }
+
+  .ffullname,
+  .tfullname {
+    top: 5px;
+  }
+
+  .acls_left_date_from,
+  .acls_left_person,
+  .acls_left_person span {
+    font-size: 14px;
+  }
+
+  .acls_left_date_from p img,
+  .acls_left_person img {
+    margin-right: 8px;
+    position: relative;
+    top: -2px;
+    width: 15px;
+  }
+
+  .acls_left_date_from,
+  .acls_left_person {
+    padding: 6px 4px;
+  }
+
+  .acls_left_way_input {
+    grid-row-gap: 10px;
+  }
+
+  .ac_result_left {
+    padding: 0px 0px;
+  }
+
+  .ac_result {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ac_result_left {
+    order: 2;
+  }
+
+  .ac_result_map {
+    order: 1;
+    width: 100%;
+    height: 400px;
+  }
+
+  .ac_result_right {
+    order: 3;
+  }
+
+  .ac_result_left {
+    padding: 22px 10px;
+  }
+
+  .ap_aircraft_details {
+    gap: 40px;
+  }
+
+  .apac_img {
+    display: block;
+  }
+
+  .ac_result {
+    height: auto;
+  }
+
+  .ac_result_option {
+    grid-column-gap: 2rem;
+  }
+
+  .ac_result_cnt {
+    margin-top: 0.4rem;
+  }
+  .apac_img img {
+    display: block;
+    width: auto;
+    height: 100px;
+  }
+
+  .ac_result_cnt,
+  .apac_details {
+    padding: 0;
+  }
+
+  .ap_aircraft_details_price {
+    text-align: left;
+    line-height: 1;
+  }
+
+  .ap_aircraft_details_price p {
+    text-align: center !important;
+  }
+
+  .price_block_gen {
+    grid-template-columns: 1fr 114px;
+  }
+
+  .ap_aircraft_details_price p {
+    margin-left: 20px;
+  }
+
+  .ap_aircraft_message {
+    grid-template-columns: 1fr 120px;
+  }
+
+  .ap_aircraft_message_right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    border-left: 1px solid #fff;
+  }
+
+  .ap_aircraft_message_right button {
+    border: 0;
+  }
+
+  .apac_details p,
+  .ap_aircraft_message_left p {
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  .ap_aircraft_details {
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+
+  .ac_search_popup {
+    background-color: #5d5d5d;
+    height: calc(100vh - 80px);
+    top: 80px;
+  }
+
+  .aclspop_input_single .onewaybj,
+  .aclspop_input_single .bjf_grid,
+  .acls_main_right,
+  .aclspop_input_round_block .onewaybj,
+  .aclspop_input_round_block .bjf_grid {
+    display: block !important;
+  }
+
+  .aclspop_input_single .acls_main_left,
+  .aclspop_input_round_block .acls_main_left {
+    display: block;
+  }
+
+  .acls_popup input {
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+
+  .acls_popup input::placehoder {
+    color: #fff;
+    opacity: 1;
+  }
+
+  .plan_filter_form_input {
+    background-image: url(https://cdn.prod.website-files.com/66fa75fb0d726d65d059a42d/6847fd2df873ed50e2d0c9bd_plane.svg);
+    background-size: 22px;
+  }
+
+  .eminputblock {
+    margin-bottom: 25px;
+  }
+
+  .search-results {
+    width: 100%;
+  }
+
+  .search-results p {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .acls_popup {
+    background-color: transparent;
+  }
+
+  .ac_dep_heading_right {
+    display: none;
+  }
+
+  .more_arrow {
+    display: block !important;
+    transition: all 0.3s ease;
+    transform: rotate(180deg);
+  }
+
+  .more_arrow.rotedArrow {
+    transform: rotate(0deg);
+  }
+
+  .areatoggle {
+    display: none;
+  }
+
+  .ac_result_right {
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+
+  .ac_dep.mt1-5 {
+    margin-top: 0.8rem;
+  }
+
+  .ac_result_left {
+    min-height: auto;
+  }
+
+  .ap_aircraft_details {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+  }
 }
 
 @media screen and (min-width: 576px) and (max-width: 767px) {
-}
-
-@media screen and (max-width: 576px) {
   .desktop_setting {
     display: none;
   }
@@ -1144,17 +1534,14 @@ p.dep_hover_para {
     grid-template-columns: 1fr;
   }
 
-  /* .ac_result_map {
-    height: 300px;
-  } */
-
   .ac_result_left {
     order: 2;
   }
 
   .ac_result_map {
     order: 1;
-    display: none;
+    width: 100%;
+    height: 400px;
   }
 
   .ac_result_right {
@@ -1316,6 +1703,296 @@ p.dep_hover_para {
 
   .ac_dep.mt1-5 {
     margin-top: 0.8rem;
+  }
+
+  .ac_result_left {
+    min-height: auto;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .desktop_setting {
+    display: none;
+  }
+
+  .acls_left_way .acls_right {
+    display: block;
+  }
+
+  .acls_left_way {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .acls_element {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .acls_left_way ul {
+    padding: 5px;
+  }
+
+  .acls_left_way ul li {
+    padding: 2px 4px;
+    padding-bottom: 2px;
+    padding-bottom: 3px;
+  }
+
+  .oneway_input {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .acls_left_way_place {
+    grid-column: span 2;
+    grid-template-columns: 1fr 25px 1fr;
+  }
+
+  .ffullname,
+  .tfullname {
+    margin: 0;
+  }
+
+  .tshortname {
+    margin-right: 0;
+  }
+
+  .acls_left_way p,
+  .fshortname,
+  .tshortname {
+    font-size: 14px;
+  }
+
+  .fshortname,
+  .tshortname {
+    padding: 1px 4px;
+    position: relative;
+    top: -3px;
+  }
+
+  .acls_left_way p img {
+    display: none;
+  }
+
+  .acls_left_way_place {
+    padding: 4px;
+  }
+
+  .acls_right_way p {
+    width: 100%;
+  }
+
+  .ffullname,
+  .tfullname {
+    top: 5px;
+  }
+
+  .acls_left_date_from,
+  .acls_left_person,
+  .acls_left_person span {
+    font-size: 14px;
+  }
+
+  .acls_left_date_from p img,
+  .acls_left_person img {
+    margin-right: 8px;
+    position: relative;
+    top: -2px;
+    width: 15px;
+  }
+
+  .acls_left_date_from,
+  .acls_left_person {
+    padding: 6px 4px;
+  }
+
+  .acls_left_way_input {
+    grid-row-gap: 10px;
+  }
+
+  .ac_result_left {
+    padding: 0px 0px;
+  }
+
+  .ac_result {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ac_result_left {
+    order: 2;
+  }
+
+  .ac_result_map {
+    order: 1;
+    width: 100%;
+    height: 400px;
+  }
+
+  .ac_result_right {
+    order: 3;
+  }
+
+  .ac_result_left {
+    padding: 22px 10px;
+  }
+
+  .ap_aircraft_details {
+    display: block;
+  }
+
+  .apac_img {
+    display: block;
+  }
+
+  .ac_result {
+    height: auto;
+  }
+
+  .ac_result_option {
+    grid-column-gap: 2rem;
+  }
+
+  .ac_result_cnt {
+    margin-top: 0.4rem;
+  }
+  .apac_img img {
+    display: block;
+    width: auto;
+    height: 100px;
+  }
+
+  .ac_result_cnt,
+  .apac_details {
+    padding: 0;
+  }
+
+  .ap_aircraft_details_price {
+    text-align: left;
+    line-height: 1;
+  }
+
+  .ap_aircraft_details_price p {
+    text-align: center !important;
+  }
+
+  .price_block_gen {
+    grid-template-columns: 1fr 114px;
+  }
+
+  .ap_aircraft_details_price p {
+    margin-left: 20px;
+  }
+
+  .ap_aircraft_message {
+    grid-template-columns: 1fr 120px;
+  }
+
+  .ap_aircraft_message_right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    border-left: 1px solid #fff;
+  }
+
+  .ap_aircraft_message_right button {
+    border: 0;
+  }
+
+  .apac_details p,
+  .ap_aircraft_message_left p {
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  .ap_aircraft_details {
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+
+  .ac_search_popup {
+    background-color: #5d5d5d;
+    height: calc(100vh - 80px);
+    top: 80px;
+  }
+
+  .aclspop_input_single .onewaybj,
+  .aclspop_input_single .bjf_grid,
+  .acls_main_right,
+  .aclspop_input_round_block .onewaybj,
+  .aclspop_input_round_block .bjf_grid {
+    display: block !important;
+  }
+
+  .aclspop_input_single .acls_main_left,
+  .aclspop_input_round_block .acls_main_left {
+    display: block;
+  }
+
+  .acls_popup input {
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+
+  .acls_popup input::placehoder {
+    color: #fff;
+    opacity: 1;
+  }
+
+  .plan_filter_form_input {
+    background-image: url(https://cdn.prod.website-files.com/66fa75fb0d726d65d059a42d/6847fd2df873ed50e2d0c9bd_plane.svg);
+    background-size: 22px;
+  }
+
+  .eminputblock {
+    margin-bottom: 25px;
+  }
+
+  .search-results {
+    width: 100%;
+  }
+
+  .search-results p {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .acls_popup {
+    background-color: transparent;
+  }
+
+  .ac_dep_heading_right {
+    display: none;
+  }
+
+  .more_arrow {
+    display: block !important;
+    transition: all 0.3s ease;
+    transform: rotate(180deg);
+  }
+
+  .more_arrow.rotedArrow {
+    transform: rotate(0deg);
+  }
+
+  .areatoggle {
+    display: none;
+  }
+
+  .ac_result_right {
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+
+  .ac_dep.mt1-5 {
+    margin-top: 0.8rem;
+  }
+
+  .ac_result_left {
+    min-height: auto;
   }
 }
 
